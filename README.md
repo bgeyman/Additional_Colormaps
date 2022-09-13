@@ -1,5 +1,5 @@
 # Additional_Colormaps
-**Description**: Collection of a few of my favorite colormaps
+**Description**: A simple set of functions to load and use a collection of my favorite colormaps
 
 ------------------
 ### Part 1: Instructions for loading functions in a python script
