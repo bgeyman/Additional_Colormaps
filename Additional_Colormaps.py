@@ -82,14 +82,3 @@ def make_hex_list(rgb_list):
 def make_custom_cmap_from_hex_list(hex_list:list, n_colors:int, cmap_name:str):
     cmap = clr.LinearSegmentedColormap.from_list(cmap_name, hex_list, N=n_colors)
     return cmap
-
-#hex_colors = []
-#for c in colors:
-#    rgb_code = np.array(c)*255
-#    rgb_code = rgb_code.astype(int)
-#    hex_code = get_hex_color(list(rgb_code))
-#    hex_colors.append(hex_code)
-
-#if __name__ == "__main__":
-#    import sys
-#    fib(int(sys.argv[1]))
