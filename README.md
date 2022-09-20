@@ -8,7 +8,7 @@
 ```
 import sys
 sys.path.append('/PATHNAME/Additional_Colormaps/')
-from Additional_Colormaps import make_colormap, load_all_cmaps, plot_cmap_example
+from Additional_Colormaps import load_colormap, load_all_cmaps, plot_cmap_example
 ```
 **Option 2: Install python package in "development mode"**
 
