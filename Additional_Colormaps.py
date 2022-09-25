@@ -49,7 +49,26 @@ def load_all_cmaps():
             'USGS_rainbow_15lev_a':USGS_15lev_a, 'USGS_rainbow_15lev_b':USGS_15lev_b,
             'USGS_rainbow_16lev':USGS_16lev, 'rafaj_AQ':rafaj_10lev}
     
+    for i in ['lapazS.txt','acton.txt','actonS.txt','bam.txt','bamako.txt','bamakoS.txt',
+              'bamO.txt','batlow.txt','batlowK.txt','batlowS.txt','batlowW.txt','berlin.txt',
+              'bilbao.txt','bilbaoS.txt','broc.txt','brocO.txt','buda.txt','budaS.txt',
+              'bukavu.txt','cork.txt','corkO.txt','davos.txt','davosS.txt','devon.txt',
+              'devonS.txt','fes.txt','grayC.txt','grayCS.txt','hawaii.txt','hawaiiS.txt',
+              'imola.txt', 'imolaS.txt', 'lajolla.txt', 'lajollaS.txt', 'lapaz.txt',
+              'lisbon.txt', 'nuuk.txt', 'nuukS.txt', 'oleron.txt', 'oslo.txt', 'osloS.txt',
+              'roma.txt', 'romaO.txt', 'tofino.txt', 'tokyo.txt', 'tokyoS.txt', 'turku.txt',
+              'turkuS.txt', 'vanimo.txt', 'vik.txt', 'vikO.txt']:
+        
+        data = np.loadtxt(path+f'cmcrameri/{i}')
+        N = data.shape[0]
+        name = i.split('.')[0]
+
+        # Create and register colormap
+        maps[name] = ListedColormap(colors=data, name=name)
+    
     return maps
+
+new_cmaps = load_all_cmaps()
 
 def plot_cmap_example(cmap):
     """
@@ -82,3 +101,147 @@ def make_hex_list(rgb_list):
 def make_custom_cmap_from_hex_list(hex_list:list, n_colors:int, cmap_name:str):
     cmap = clr.LinearSegmentedColormap.from_list(cmap_name, hex_list, N=n_colors)
     return cmap
+
+
+## Categorize colormaps for use in function `show_cmaps()`. This section is and `show_cmaps()`
+## is taken from https://github.com/callumrollo/cmcrameri and slightly adapted.
+_cmap_names_sequential = (
+    "batlow", "batlowW", "batlowK",
+    "devon", "lajolla", "bamako",
+    "davos", "bilbao", "nuuk",
+    "oslo", "grayC", "hawaii", 
+    "lapaz", "tokyo", "buda",
+    "acton", "turku", "imola",
+)
+
+_cmap_names_diverging = (
+    "broc", "cork", "vik",
+    "lisbon", "tofino", "berlin",
+    "roma", "bam", "vanimo",
+)
+
+_cmap_names_multi_sequential = (
+    "oleron", "bukavu", "fes",
+)
+
+_cmap_names_uncategorized = (
+    "ndvi",'WBGYR', 'BGYORV', 'precip3_16lev', 'perc2_9lev', 'wind_17lev', 
+    'cmocean_curl', 'cmocean_ice', 'cmocean_thermal', 
+    'USGS_rainbow', 'USGS_rainbow_15lev_a', 'USGS_rainbow_15lev_b', 'USGS_rainbow_16lev', 'rafaj_AQ'
+)
+
+_cmap_base_names_uncategorized = tuple(
+    name
+    for name in _cmap_names_uncategorized
+
+)
+
+_cmap_base_names_categorical = tuple(
+    name
+    for name in _cmap_names_sequential
+    if name not in {"batlowW", "batlowK"}
+)
+_cmap_names_categorical = tuple(
+    f"{name}S"
+    for name in _cmap_base_names_categorical
+)
+
+_cmap_base_names_cyclic = (
+    "roma", "bam",
+    "broc", "cork", "vik",
+)
+_cmap_names_cyclic = tuple(
+    f"{name}O"
+    for name in _cmap_base_names_cyclic
+)
+
+
+def show_cmaps(*, ncols=6, figwidth=8):
+    """
+
+    """
+    import math
+
+    x = np.linspace(0, 1, 256)[np.newaxis, :]
+
+    groups = (
+        ("Sequential", _cmap_names_sequential),
+        ("Diverging", _cmap_names_diverging),
+        ("Multi-sequential", _cmap_names_multi_sequential),
+        ("Cyclic", _cmap_names_cyclic),
+        ("Uncategorized", _cmap_names_uncategorized)
+    )
+
+    nrows = 1
+    istarts = []
+    for group_name, group in groups:
+        n = len(group)
+        istarts.append(nrows)
+        nrows += math.ceil(n / ncols)
+        if group_name != groups[-1][0]:
+            nrows += 1  # group spacer row
+
+    nrows_titles = len(groups)
+    nrows_cmaps = nrows - nrows_titles
+
+    hrel_spacer = 0.3  # spacer height relative cmap row height
+    hratios = [1 for _ in range(nrows)]
+    for i in istarts:
+        hratios[i-1] = hrel_spacer  # group spacer row
+
+    hrow = 0.4  # size of cmap row
+    hspace = 0.7  # hspace, relative to `hrow`
+    hbottom = 0.2
+    htop = 0.05
+    figheight = (
+        hbottom + 
+        htop + 
+        hrow*nrows_cmaps + 
+        hrow*hrel_spacer*nrows_titles + 
+        hrow*hspace*(nrows - 1)
+    )
+
+    fig, axs = plt.subplots(nrows, ncols,
+        figsize=(figwidth, figheight),
+        gridspec_kw=dict(
+            left=0.01, right=0.99,
+            top=1 - htop/figheight,
+            bottom=hbottom/figheight,
+            hspace=hspace/np.mean(hratios),
+            wspace=0.08,
+            height_ratios=hratios
+        )
+    )
+    fig.set_tight_layout(False)
+
+    for ax in axs.flat:
+        ax.set_axis_off()
+
+    for istart, (group_name, group) in zip(istarts, groups):
+
+        # Group label
+        ax0 = axs[istart, 0]
+        ax0.text(0.01, 1.02, group_name, size=24, c="0.4", style="italic", 
+            va="bottom", ha="left", transform=ax0.transAxes)
+
+        for ax, cmap_name in zip(axs[istart:].flat, group):
+
+            cmap = new_cmaps[cmap_name]
+            ax.imshow(x, cmap=cmap, aspect="auto")
+            if (len(cmap_name)<12):
+                ax.text(0.01 * ncols/6, -0.03, cmap_name, size=14, color="0.2",
+                    va="top", transform=ax.transAxes)
+            elif (len(cmap_name)<24):
+                ax.text(0.01 * ncols/6, -0.03, cmap_name, size=8, color="0.2",
+                    va="top", transform=ax.transAxes)    
+
+#hex_colors = []
+#for c in colors:
+#    rgb_code = np.array(c)*255
+#    rgb_code = rgb_code.astype(int)
+#    hex_code = get_hex_color(list(rgb_code))
+#    hex_colors.append(hex_code)
+
+#if __name__ == "__main__":
+#    import sys
+#    fib(int(sys.argv[1]))
