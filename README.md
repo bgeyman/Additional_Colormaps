@@ -72,7 +72,7 @@ Output:
 ## Other resources:
 
 **color lists:**
- - https://xkcd.com/color/rgb/
+ - https://xkcd.com/color/rgb/ (gallery of named colors from xkcd)
 
 
 
