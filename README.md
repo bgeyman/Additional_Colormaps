@@ -69,5 +69,10 @@ Output:
 
 <img width="500" alt="example_cbar" src="https://user-images.githubusercontent.com/56602673/190019079-4d97c5f5-d107-4c25-b789-85ab17e0c43a.png">
 
+## Other resources:
+
+**color lists:**
+ - https://xkcd.com/color/rgb/
+
 
 
