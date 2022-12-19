@@ -74,5 +74,9 @@ Output:
 **color lists:**
  - https://xkcd.com/color/rgb/ (gallery of named colors from xkcd)
 
+**color tools:**
+
+**general info:**
+
 
 
