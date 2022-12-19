@@ -2,6 +2,11 @@
 **Description**: A simple set of functions to load and use a collection of my favorite colormaps
 
 ------------------
+### Part 0: Install dependencies (if needed)
+
+```pip install -r requirements.txt```
+
+------------------
 ### Part 1: Instructions for loading functions in a python script
 
 **Option 1: add path to list of directories for python interpreter to search**
