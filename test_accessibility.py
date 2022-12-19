@@ -6,6 +6,7 @@ from colormath import color_diff
 from colormath.color_objects import sRGBColor, LabColor, HSVColor, CMYKColor, LCHabColor
 from colormath.color_conversions import convert_color
 from colortools import *
+import matplotlib.pyplot as plt
 
 def get_colormath_sRGB(rgb_old, is_upscaled=False):
     '''
@@ -93,8 +94,19 @@ def display_accessibility_comparison(cmap):
     Example Usage:
         display_colorblind_comparison(new_cmaps['rafaj_AQ'])
     '''
-    display(cmap, display_id=0)
-    display(ListedColormap(cmap_to_greyscale(cmap), name='greyscale'), display_id=1)
-    display(ListedColormap(cmap_to_colorblind_g(cmap), name='colorblind_g'), display_id=2)
-    display(ListedColormap(cmap_to_colorblind_r(cmap), name='colorblind_r'), display_id=3)
+    greyscale = ListedColormap(cmap_to_greyscale(cmap))
+    colorblind_g = ListedColormap(cmap_to_colorblind_g(cmap))
+    colorblind_r = ListedColormap(cmap_to_colorblind_r(cmap))
+
+    x = np.arange(len(cmap.colors)).reshape(1,-1)
+
+    for (cmap, subplt, title) in zip([cmap, greyscale, colorblind_g, colorblind_r],
+                              [411, 412, 413, 414],
+                              ['original', 'greyscale', 'colorblind g', 'colorblind r']):
+        ax = plt.subplot(subplt)
+        ax.imshow(x, cmap=cmap)
+        ax.set_title(title)
+        ax.set_yticks(ticks=[])
+        ax.set_xticks(ticks=[])
+
     return
