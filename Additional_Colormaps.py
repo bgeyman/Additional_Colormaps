@@ -4,6 +4,7 @@ import matplotlib.colors as clr
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import json
 
 path = '/Users/bengeyman/Documents/Github/Additional_Colormaps/colormap_files/'
 
@@ -18,6 +19,18 @@ def load_colormap(path=path, filename='WhiteBlueGreenYellowRed.rgb', output_name
         for color in tmp:
             if color.isnumeric()==True:
                 tmp_row.append(float(color)/255.) # normalize 255 values to 1
+        tmp_row.append(1.) # add A (in RGBA)
+        new_data.append(tmp_row)
+
+    newcmp = ListedColormap(new_data, name=output_name)
+    return newcmp
+
+def make_cmap_from_rgblist(rgblist, output_name='test'):
+    new_data = []
+    for triple in rgblist:
+        tmp_row = []
+        for color in triple:
+            tmp_row.append(float(color)/255.) # normalize 255 values to 1
         tmp_row.append(1.) # add A (in RGBA)
         new_data.append(tmp_row)
 
@@ -49,6 +62,7 @@ def load_all_cmaps():
             'USGS_rainbow_15lev_a':USGS_15lev_a, 'USGS_rainbow_15lev_b':USGS_15lev_b,
             'USGS_rainbow_16lev':USGS_16lev, 'rafaj_AQ':rafaj_10lev}
     
+    # -- now add cmcrameri maps
     for i in ['lapazS.txt','acton.txt','actonS.txt','bam.txt','bamako.txt','bamakoS.txt',
               'bamO.txt','batlow.txt','batlowK.txt','batlowS.txt','batlowW.txt','berlin.txt',
               'bilbao.txt','bilbaoS.txt','broc.txt','brocO.txt','buda.txt','budaS.txt',
@@ -65,6 +79,13 @@ def load_all_cmaps():
 
         # Create and register colormap
         maps[name] = ListedColormap(colors=data, name=name)
+
+    # -- now add coloropt/ggsci maps
+    with open('./colormap_files/coloropt_palettes.json', 'r') as openfile:
+        coloropt_palettes = json.load(openfile)
+
+    for cmap_name in list(coloropt_palettes.keys()):
+        maps[cmap_name] = make_cmap_from_rgblist(coloropt_palettes[cmap_name], output_name=cmap_name)
     
     return maps
 
@@ -130,6 +151,17 @@ _cmap_names_uncategorized = (
     'USGS_rainbow', 'USGS_rainbow_15lev_a', 'USGS_rainbow_15lev_b', 'USGS_rainbow_16lev', 'rafaj_AQ'
 )
 
+_cmap_names_categorical = (
+    'seaborn_colorblind', 'seaborn_colorblind6', 'paultol_high_contrast', 'paultol_vibrant', 
+    'paultol_muted', 'paultol_light', 'okabe', 'ggsci_nature_review_cancer', 'ggsci_aaas', 
+    'ggsci_new_england_journal_of_medicine', 'ggsci_lancet_oncology', 'ggsci_jama', 
+    'ggsci_clinical_oncology', 'ggsci_uscs_genome', 'ggsci_d3js_cat10', 'ggsci_d3js_cat20', 
+    'ggsci_d3js_cat20b', 'ggsci_d3js_cat20c', 'ggsci_igv', 'ggsci_locuszoom', 'ggsci_uchicago', 
+    'ggsci_uchicago_light', 'ggsci_uchicago_dark', 'ggsci_cosmic_hallmark_1', 'ggsci_cosmic_hallmark_2', 
+    'ggsci_cosmic_hallmark_3', 'ggsci_simpsons', 'ggsci_futurama', 'ggsci_rick_morty', 
+    'ggsci_star_trek', 'ggsci_tron', 'coloropt_normal'
+)
+
 _cmap_base_names_uncategorized = tuple(
     name
     for name in _cmap_names_uncategorized
@@ -141,10 +173,7 @@ _cmap_base_names_categorical = tuple(
     for name in _cmap_names_sequential
     if name not in {"batlowW", "batlowK"}
 )
-_cmap_names_categorical = tuple(
-    f"{name}S"
-    for name in _cmap_base_names_categorical
-)
+
 
 _cmap_base_names_cyclic = (
     "roma", "bam",
@@ -169,6 +198,7 @@ def show_cmaps(*, ncols=6, figwidth=8):
         ("Diverging", _cmap_names_diverging),
         ("Multi-sequential", _cmap_names_multi_sequential),
         ("Cyclic", _cmap_names_cyclic),
+        ("Categorical", _cmap_names_categorical),
         ("Uncategorized", _cmap_names_uncategorized)
     )
 
