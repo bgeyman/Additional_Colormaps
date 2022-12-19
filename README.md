@@ -2,6 +2,11 @@
 **Description**: A simple set of functions to load and use a collection of my favorite colormaps
 
 ------------------
+### Part 0: Install dependencies (if needed)
+
+```pip install -r requirements.txt```
+
+------------------
 ### Part 1: Instructions for loading functions in a python script
 
 **Option 1: add path to list of directories for python interpreter to search**
@@ -68,6 +73,15 @@ make_custom_cmap_from_hex_list(hex_list=test_hex_list, n_colors=256, cmap_name='
 Output:
 
 <img width="500" alt="example_cbar" src="https://user-images.githubusercontent.com/56602673/190019079-4d97c5f5-d107-4c25-b789-85ab17e0c43a.png">
+
+## Other resources:
+
+**color lists:**
+ - https://xkcd.com/color/rgb/ (gallery of named colors from xkcd)
+
+**color tools:**
+
+**general info:**
 
 
 
