@@ -93,8 +93,8 @@ def display_accessibility_comparison(cmap):
     Example Usage:
         display_colorblind_comparison(new_cmaps['rafaj_AQ'])
     '''
-    display(cmap)
-    display(ListedColormap(cmap_to_greyscale(cmap), name='greyscale'))
-    display(ListedColormap(cmap_to_colorblind_g(cmap), name='colorblind_g'))
-    display(ListedColormap(cmap_to_colorblind_r(cmap), name='colorblind_r'))
+    display(cmap, display_id=0)
+    display(ListedColormap(cmap_to_greyscale(cmap), name='greyscale'), display_id=1)
+    display(ListedColormap(cmap_to_colorblind_g(cmap), name='colorblind_g'), display_id=2)
+    display(ListedColormap(cmap_to_colorblind_r(cmap), name='colorblind_r'), display_id=3)
     return

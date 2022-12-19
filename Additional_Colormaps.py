@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 import json
 
+from colortools import *
+
 path = '/Users/bengeyman/Documents/Github/Additional_Colormaps/colormap_files/'
 
 def load_colormap(path=path, filename='WhiteBlueGreenYellowRed.rgb', output_name='test'):
