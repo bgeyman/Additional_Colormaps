@@ -74,6 +74,16 @@ Output:
 
 <img width="500" alt="example_cbar" src="https://user-images.githubusercontent.com/56602673/190019079-4d97c5f5-d107-4c25-b789-85ab17e0c43a.png">
 
+Finally, you can check the accessibility of colormaps using:
+
+```
+display_accessibility_comparison(new_cmaps['rafaj_AQ'])
+```
+
+Output:
+
+<img width="500" alt="accessibility test output" src="https://user-images.githubusercontent.com/56602673/208551494-ebfdf2b4-ffde-49dc-b058-9c60fee71734.png">
+
 ## Other resources:
 
 **color lists:**
@@ -82,6 +92,6 @@ Output:
 **color tools:**
 
 **general info:**
-
+- http://tsitsul.in/blog/coloropt/
 
 
