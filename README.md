@@ -79,6 +79,9 @@ Finally, you can check the accessibility of colormaps using:
 ```
 display_accessibility_comparison(new_cmaps['rafaj_AQ'])
 ```
+
+Output:
+
 <img width="500" alt="accessibility test output" src="https://user-images.githubusercontent.com/56602673/208551494-ebfdf2b4-ffde-49dc-b058-9c60fee71734.png">
 
 ## Other resources:
