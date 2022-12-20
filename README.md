@@ -93,5 +93,11 @@ Output:
 
 **general info:**
 - http://tsitsul.in/blog/coloropt/
+- https://personal.sron.nl/~pault/#sec:colour_blindness
+- https://waterdata.usgs.gov/blog/tolcolors/
 
+## Some guidelines for palette usage:
+- for (non-ordinal) categorical data, use a qualitative/categorical palette. Distinguishability is the main criteria.
+- to draw contrast among ordinal or sequential data, use a diverging palette. Diverging palettes are also useful when you want to demonstrate differences in sign (+ or -)
+- sequential palettes can be simple and nice when you have continuous numeric data which share the same sign
 
