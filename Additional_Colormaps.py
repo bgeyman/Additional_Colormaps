@@ -83,7 +83,7 @@ def load_all_cmaps():
         maps[name] = ListedColormap(colors=data, name=name)
 
     # -- now add coloropt/ggsci maps
-    with open('./colormap_files/coloropt_palettes.json', 'r') as openfile:
+    with open(f'{path}/coloropt_palettes.json', 'r') as openfile:
         coloropt_palettes = json.load(openfile)
 
     for cmap_name in list(coloropt_palettes.keys()):
