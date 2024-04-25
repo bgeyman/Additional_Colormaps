@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import json
+import os
 
 from colortools import *
 
@@ -27,12 +28,15 @@ def load_colormap(path=path, filename='WhiteBlueGreenYellowRed.rgb', output_name
     newcmp = ListedColormap(new_data, name=output_name)
     return newcmp
 
-def make_cmap_from_rgblist(rgblist, output_name='test'):
+def make_cmap_from_rgblist(rgblist, output_name='test', normalize=True):
     new_data = []
     for triple in rgblist:
         tmp_row = []
         for color in triple:
-            tmp_row.append(float(color)/255.) # normalize 255 values to 1
+            if normalize:
+                tmp_row.append(float(color)/255.) # normalize 255 values to 1
+            else:
+                tmp_row.append(float(color))
         tmp_row.append(1.) # add A (in RGBA)
         new_data.append(tmp_row)
 
@@ -43,27 +47,36 @@ def load_all_cmaps():
     ## import cmap from NCL gallery
     ## many more here: https://www.ncl.ucar.edu/Document/Graphics/color_table_gallery.shtml
     
-    modis_ndvi      = load_colormap(filename='NEO_modis_ndvi.rgb', output_name='new_cmap')
+    modis_ndvi      = load_colormap(filename='NEO_modis_ndvi.rgb',          output_name='new_cmap')
     WBGYR           = load_colormap(filename='WhiteBlueGreenYellowRed.rgb', output_name='WBGYR')
-    BGYORV          = load_colormap(filename='BlGrYeOrReVi200.rgb', output_name='BGYORV')
-    precip3_16lev   = load_colormap(filename='precip3_16lev.rgb', output_name='precip3_16lev')
-    perc2_9lev      = load_colormap(filename='perc2_9lev.rgb', output_name='perc2_9lev')
-    wind_17lev      = load_colormap(filename='wind_17lev.rgb', output_name='wind_17lev')
-    cmocean_curl    = load_colormap(filename='cmocean_curl.rgb', output_name='cmocean_curl')
-    cmocean_ice     = load_colormap(filename='cmocean_ice.rgb', output_name='cmocean_ice')
-    cmocean_thermal = load_colormap(filename='cmocean_thermal.rgb', output_name='cmocean_thermal')
-    USGS            = load_colormap(filename='USGS_rainbow_13lev.rgb', output_name='USGS_rainbow')
+    BGYORV          = load_colormap(filename='BlGrYeOrReVi200.rgb',         output_name='BGYORV')
+    precip3_16lev   = load_colormap(filename='precip3_16lev.rgb',           output_name='precip3_16lev')
+    perc2_9lev      = load_colormap(filename='perc2_9lev.rgb',              output_name='perc2_9lev')
+    wind_17lev      = load_colormap(filename='wind_17lev.rgb',              output_name='wind_17lev')
+    cmocean_curl    = load_colormap(filename='cmocean_curl.rgb',            output_name='cmocean_curl')
+    cmocean_ice     = load_colormap(filename='cmocean_ice.rgb',             output_name='cmocean_ice')
+    cmocean_thermal = load_colormap(filename='cmocean_thermal.rgb',         output_name='cmocean_thermal')
+    USGS            = load_colormap(filename='USGS_rainbow_13lev.rgb',      output_name='USGS_rainbow')
     USGS_15lev_a    = load_colormap(filename='USGS_rainbow_15lev_handmod.rgb', output_name='USGS_rainbow_15_a')
     USGS_15lev_b    = load_colormap(filename='USGS_rainbow_15lev_handmod_b.rgb', output_name='USGS_rainbow_15_b')
     USGS_16lev      = load_colormap(filename='USGS_rainbow_16lev_handmod.rgb', output_name='USGS_rainbow_16')
-    rafaj_10lev     = load_colormap(filename='rafaj_2021_air_quality.rgb', output_name='rafaj_AQ.rgb') # from Peter Rafaj et al 2021 Environ. Res. Lett. 16 045005
+    rafaj_10lev     = load_colormap(filename='rafaj_2021_air_quality.rgb',   output_name='rafaj_AQ') # from Peter Rafaj et al 2021 Environ. Res. Lett. 16 045005
+    # maps from: http://inversed.ru/Blog_2.htm
     
     maps = {'ndvi': modis_ndvi, 'WBGYR': WBGYR, 'BGYORV':BGYORV, 'precip3_16lev':precip3_16lev,  
             'perc2_9lev': perc2_9lev, 'wind_17lev':wind_17lev, 'cmocean_curl':cmocean_curl,
             'cmocean_ice':cmocean_ice, 'cmocean_thermal':cmocean_thermal, 'USGS_rainbow':USGS, 
             'USGS_rainbow_15lev_a':USGS_15lev_a, 'USGS_rainbow_15lev_b':USGS_15lev_b,
-            'USGS_rainbow_16lev':USGS_16lev, 'rafaj_AQ':rafaj_10lev}
+            'USGS_rainbow_16lev':USGS_16lev, 'rafaj_AQ':rafaj_10lev, }
     
+    # now add Karpov maps
+    for i in ['lacerta.rgb','los_alamos_olive_blue.rgb','CH_Alt_2.rgb','CH_Alt_3.rgb']:
+        # skip the first line
+        data = np.loadtxt(path+f'karpov/{i}', skiprows=1)
+        name = i.split('.')[0]
+        # Create and register colormap
+        maps[name] = ListedColormap(colors=data, name=name)
+
     # -- now add cmcrameri maps
     for i in ['lapazS.txt','acton.txt','actonS.txt','bam.txt','bamako.txt','bamakoS.txt',
               'bamO.txt','batlow.txt','batlowK.txt','batlowS.txt','batlowW.txt','berlin.txt',
@@ -81,6 +94,15 @@ def load_all_cmaps():
 
         # Create and register colormap
         maps[name] = ListedColormap(colors=data, name=name)
+
+    # -- now add cpt colormaps
+    # list all files in cpt directory
+    cpt_files = os.listdir(path+'/cpt/')
+    for i in cpt_files:
+        if i.endswith('.pg'):
+            name = i.split('.')[0]
+            tmp = pd.read_csv(f'{path}/cpt/{i}', header=None, delimiter=r"\s+")
+            maps[name] = ListedColormap( (tmp.iloc[:,1:]/255.).values )
 
     # -- now add coloropt/ggsci maps
     with open(f'{path}/coloropt_palettes.json', 'r') as openfile:
@@ -135,6 +157,7 @@ _cmap_names_sequential = (
     "oslo", "grayC", "hawaii", 
     "lapaz", "tokyo", "buda",
     "acton", "turku", "imola",
+    "lacerta", "los_alamos_olive_blue", "CH_Alt_2", "CH_Alt_3",
 )
 
 _cmap_names_diverging = (
@@ -162,6 +185,36 @@ _cmap_names_categorical = (
     'ggsci_uchicago_light', 'ggsci_uchicago_dark', 'ggsci_cosmic_hallmark_1', 'ggsci_cosmic_hallmark_2', 
     'ggsci_cosmic_hallmark_3', 'ggsci_simpsons', 'ggsci_futurama', 'ggsci_rick_morty', 
     'ggsci_star_trek', 'ggsci_tron', 'coloropt_normal'
+)
+
+_cmap_names_cpt = ('tpusarf', 'hx-090-090', 'wiki-1', 'wiki-ice-greenland',
+       'seminf-haxby', 'subtle', 'afrikakarte-bath', 'tpsfhf',
+       'craterlake_dk', 'mars_1', 'desertification_3', 'Lain', 'reds_01',
+       'tpglarm', 'Caribbean', 'chile', 'nrwc', 'desertification_2',
+       'Karantina', 'moon_reflection', 'tpglpof', 'wiki-1', 'sepia_04',
+       'platinum_palladium_01', 'craterlake_lt', 'hx-080-080',
+       'park_boundary_1', 'ecuador', 'bath_112', 'bbrad', 'europe_4',
+       'bring_me_some_winter', 'pnw_1115', 'tpglpom', 'ibcao', 'gray',
+       'sat_water_vapour', 'tpglarf', 'spacious_landscape',
+       'fire_active_1', 'wiki-2', 'weather_the_blues', 'venezuela',
+       'illumination', 'cyanotype-sodableach_01', 'craterlake_shore',
+       'tpusarm', 'wiki-caucasus-bath', 'pnw_1124', 'mojave', 'tpsfhm',
+       'pnw', 'organic_vegetation', 'chair_horizon', 'yellow_dk',
+       'tpglhcm', 'argentina', 'OS_WAT_Mars', 'fire_active_2',
+       'cyanotype-sodableach_02', 'bath_110', 'afrikakarte', 'europe_2',
+       'tpushuf', 'craterlake_lti', 'cyanotype-sodableach_03', 'bath_111',
+       'selenium_brown_01', 'europe_3', 'usgs', 'Beat_Around_The_Bush',
+       'afrikakarte-topo', 'yellow', 'europe_7', 'fire_active_3',
+       'desertification_1', 'byr', 'warm_gray_dk', 'cyanotype_01',
+       'hx-080-100', 'hx-080-120', 'revisiting_dreams', 'ibcso-bath',
+       'bolivia', 'gray_dk', 'europe_8', 'park_boundary_2',
+       'craterlake_dki', 'temperature', 'gold_01', 'desertification_4',
+       'wiki-france', 'Mt_Fuji_Sumie', 'temperature2', 'tpglhwf',
+       'gray_lt', 'mars_2', 'warm_gray', 'sepia_02', 'reds_02', 'tpglhcf',
+       'arctic', 'warm_gray_lt', 'spain', 'bwbrown_01',
+       'BlueYellowRed','BlueWhiteOrangeRed','ViBlGrWhYeOrRe','WhBlGrYeRe',
+       'WhViBlGrYeOrRe','Tubular_Bells','Grand_Boucle','blue-tan',
+       'moon', 'polar-night','GMT_haxby', 'nrwd'
 )
 
 _cmap_base_names_uncategorized = tuple(
@@ -201,7 +254,8 @@ def show_cmaps(*, ncols=6, figwidth=8):
         ("Multi-sequential", _cmap_names_multi_sequential),
         ("Cyclic", _cmap_names_cyclic),
         ("Categorical", _cmap_names_categorical),
-        ("Uncategorized", _cmap_names_uncategorized)
+        ("Uncategorized", _cmap_names_uncategorized),
+        ("cpt", _cmap_names_cpt)
     )
 
     nrows = 1
