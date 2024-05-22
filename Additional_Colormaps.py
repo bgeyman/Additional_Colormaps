@@ -9,7 +9,7 @@ import os
 
 from colortools import *
 
-path = '/Users/bengeyman/Documents/Github/Additional_Colormaps/colormap_files/'
+path = './colormap_files/'
 
 def load_colormap(path=path, filename='WhiteBlueGreenYellowRed.rgb', output_name='test'):
 
@@ -111,6 +111,13 @@ def load_all_cmaps():
     for cmap_name in list(coloropt_palettes.keys()):
         maps[cmap_name] = make_cmap_from_rgblist(coloropt_palettes[cmap_name], output_name=cmap_name)
     
+    # -- now add nature reviews colors
+    with open(f'{path}/json/nature_reviews.json', 'r') as openfile:
+        nature_reviews = json.load(openfile)
+
+    for cmap_name in list(nature_reviews.keys()):
+        maps[cmap_name] = make_cmap_from_rgblist(nature_reviews[cmap_name], output_name=cmap_name)
+
     return maps
 
 new_cmaps = load_all_cmaps()
@@ -217,6 +224,8 @@ _cmap_names_cpt = ('tpusarf', 'hx-090-090', 'wiki-1', 'wiki-ice-greenland',
        'moon', 'polar-night','GMT_haxby', 'nrwd'
 )
 
+_nature_review_names = ('stone', 'grey', 'red', 'blue', 'yellow', 'olive', 'green', 'teal', 'purple', 'orange')
+
 _cmap_base_names_uncategorized = tuple(
     name
     for name in _cmap_names_uncategorized
@@ -239,6 +248,10 @@ _cmap_names_cyclic = tuple(
     for name in _cmap_base_names_cyclic
 )
 
+_cmap_names_palette = tuple(
+    name for name in _nature_review_names
+)
+
 
 def show_cmaps(*, ncols=6, figwidth=8):
     """
@@ -255,7 +268,8 @@ def show_cmaps(*, ncols=6, figwidth=8):
         ("Cyclic", _cmap_names_cyclic),
         ("Categorical", _cmap_names_categorical),
         ("Uncategorized", _cmap_names_uncategorized),
-        ("cpt", _cmap_names_cpt)
+        ("cpt", _cmap_names_cpt),
+        ("nature_reviews", _nature_review_names),
     )
 
     nrows = 1
