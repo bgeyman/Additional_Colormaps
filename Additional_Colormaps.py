@@ -9,7 +9,7 @@ import os
 
 from colortools import *
 
-path = './colormap_files/'
+path = '/Users/bengeyman/Documents/GitHub/Additional_Colormaps/colormap_files/'
 
 def load_colormap(path=path, filename='WhiteBlueGreenYellowRed.rgb', output_name='test'):
 
@@ -95,6 +95,16 @@ def load_all_cmaps():
         # Create and register colormap
         maps[name] = ListedColormap(colors=data, name=name)
 
+    # -- now add txt maps
+    for i in ['viridis_white.txt']:
+        
+        data = np.loadtxt(path+f'txt/{i}')
+        N = data.shape[0]
+        name = i.split('.')[0]
+
+        # Create and register colormap
+        maps[name] = ListedColormap(colors=data, name=name)
+
     # -- now add cpt colormaps
     # list all files in cpt directory
     cpt_files = os.listdir(path+'/cpt/')
@@ -117,6 +127,11 @@ def load_all_cmaps():
 
     for cmap_name in list(nature_reviews.keys()):
         maps[cmap_name] = make_cmap_from_rgblist(nature_reviews[cmap_name], output_name=cmap_name)
+
+    for f in ['palette1']:
+        # -- now add miscellaneous json palettes
+        with open(f'{path}/json/{f}.json', 'r') as openfile:
+            maps[f] = make_cmap_from_rgblist(json.load(openfile), output_name=f)
 
     return maps
 
@@ -164,7 +179,7 @@ _cmap_names_sequential = (
     "oslo", "grayC", "hawaii", 
     "lapaz", "tokyo", "buda",
     "acton", "turku", "imola",
-    "lacerta", "los_alamos_olive_blue", "CH_Alt_2", "CH_Alt_3",
+    "lacerta", "los_alamos_olive_blue", "CH_Alt_2", "CH_Alt_3", "viridis_white"
 )
 
 _cmap_names_diverging = (
@@ -191,7 +206,7 @@ _cmap_names_categorical = (
     'ggsci_d3js_cat20b', 'ggsci_d3js_cat20c', 'ggsci_igv', 'ggsci_locuszoom', 'ggsci_uchicago', 
     'ggsci_uchicago_light', 'ggsci_uchicago_dark', 'ggsci_cosmic_hallmark_1', 'ggsci_cosmic_hallmark_2', 
     'ggsci_cosmic_hallmark_3', 'ggsci_simpsons', 'ggsci_futurama', 'ggsci_rick_morty', 
-    'ggsci_star_trek', 'ggsci_tron', 'coloropt_normal'
+    'ggsci_star_trek', 'ggsci_tron', 'coloropt_normal', 'palette1'
 )
 
 _cmap_names_cpt = ('tpusarf', 'hx-090-090', 'wiki-1', 'wiki-ice-greenland',
