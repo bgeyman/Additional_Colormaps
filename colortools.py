@@ -3,6 +3,7 @@ from colormath.color_objects import sRGBColor, LabColor, HSVColor, CMYKColor, LC
 from colormath.color_conversions import convert_color
 import numpy as np
 import itertools
+import colorsys
 
 # -- color tools copied from from:
 # https://github.com/xgfs/coloropt/blob/master/colortools.py
@@ -53,6 +54,31 @@ def to_colorblind_r(color):
     b_ = np.power(782.74+0.992052*(b**2.2)-0.003974*(g**2.2)+0.003974*(r**2.2), 1/2.2)
     gray_srgb = sRGBColor(r_, g_, b_, True)
     return gray_srgb if type(color) == sRGBColor else convert_color(gray_srgb, type(color))
+
+def scale_lightness(rgb: tuple, scale_l: float) -> tuple:
+    '''
+    Description: scales the lightness of a color
+
+    Parameters:
+        rgb: tuple, rgb color [0, 1]
+        scale_l: float, scaling factor for lightness. 
+                 1.0 is no change, <1.0 is darker, >1.0 is lighter
+    
+    Returns:
+        tuple, rgb color
+    '''
+    # check if rgb is in [0, 1] range -- if not, throw error
+    if not all(0 <= x <= 1 for x in rgb):
+        raise ValueError('RGB values must be in [0, 1] range')
+    
+    # check if length of rgb is 4 -- if so, remove alpha channel
+    if len(rgb) == 4:
+        rgb = rgb[:3]
+    
+    # convert rgb to hls
+    h, l, s = colorsys.rgb_to_hls(*rgb)
+    # manipulate h, l, s values and return as rgb
+    return colorsys.hls_to_rgb(h, min(1, l * scale_l), s = s)
 
 def window_stack(a, stepsize=1, width=3):
     n = a.shape[0]

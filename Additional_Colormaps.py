@@ -96,7 +96,7 @@ def load_all_cmaps():
         maps[name] = ListedColormap(colors=data, name=name)
 
     # -- now add txt maps
-    for i in ['viridis_white.txt']:
+    for i in ['viridis_white.txt', 'ksa.txt', 'landsat_50.txt', 'landsat_50_light.txt']:
         
         data = np.loadtxt(path+f'txt/{i}')
         N = data.shape[0]
@@ -206,7 +206,7 @@ _cmap_names_categorical = (
     'ggsci_d3js_cat20b', 'ggsci_d3js_cat20c', 'ggsci_igv', 'ggsci_locuszoom', 'ggsci_uchicago', 
     'ggsci_uchicago_light', 'ggsci_uchicago_dark', 'ggsci_cosmic_hallmark_1', 'ggsci_cosmic_hallmark_2', 
     'ggsci_cosmic_hallmark_3', 'ggsci_simpsons', 'ggsci_futurama', 'ggsci_rick_morty', 
-    'ggsci_star_trek', 'ggsci_tron', 'coloropt_normal', 'palette1'
+    'ggsci_star_trek', 'ggsci_tron', 'coloropt_normal', 'palette1', 'landsat_50', 'landsat_50_light', 'ksa'
 )
 
 _cmap_names_cpt = ('tpusarf', 'hx-090-090', 'wiki-1', 'wiki-ice-greenland',
