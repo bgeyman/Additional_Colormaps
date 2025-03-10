@@ -95,6 +95,26 @@ def load_all_cmaps():
         # Create and register colormap
         maps[name] = ListedColormap(colors=data, name=name)
 
+    # -- now add paul tol maps
+    for i in ['BuRd_continuous.txt', 'BuRd_discrete.txt',
+              'iridescent_continuous.txt', 'iridescent_discrete.txt',
+              'nightfall_continuous.txt', 'nightfall_discrete.txt',
+              'PRGn_continuous.txt', 'PRGn_discrete.txt',
+              'rainbow_PuBr_continuous.txt', 'rainbow_PuBr_discrete.txt',
+              'rainbow_PuRd_continuous.txt', 'rainbow_PuRd_discrete.txt',
+              'rainbow_WhBr_continuous.txt', 'rainbow_WhBr_discrete.txt',
+              'rainbow_WhRd_continuous.txt', 'rainbow_WhRd_discrete.txt',
+              'sunset_continuous.txt', 'sunset_discrete.txt',
+              'YlOrBr_continuous.txt', 'YlOrBr_discrete.txt',
+              ]:
+        
+        data = np.loadtxt(path+f'paul_tol/{i}')
+        N = data.shape[0]
+        name = i.split('.')[0]
+
+        # Create and register colormap
+        maps[name] = ListedColormap(colors=data, name=name)
+
     # -- now add txt maps
     for i in ['viridis_white.txt', 'ksa.txt', 'landsat_50.txt', 'landsat_50_light.txt']:
         
@@ -179,7 +199,8 @@ _cmap_names_sequential = (
     "oslo", "grayC", "hawaii", 
     "lapaz", "tokyo", "buda",
     "acton", "turku", "imola",
-    "lacerta", "los_alamos_olive_blue", "CH_Alt_2", "CH_Alt_3", "viridis_white"
+    "lacerta", "los_alamos_olive_blue", "CH_Alt_2", "CH_Alt_3", "viridis_white",
+
 )
 
 _cmap_names_diverging = (
@@ -239,6 +260,18 @@ _cmap_names_cpt = ('tpusarf', 'hx-090-090', 'wiki-1', 'wiki-ice-greenland',
        'moon', 'polar-night','GMT_haxby', 'nrwd'
 )
 
+_cmap_names_paultol = ('BuRd_continuous', 'BuRd_discrete',
+              'iridescent_continuous', 'iridescent_discrete',
+              'nightfall_continuous', 'nightfall_discrete',
+              'rainbow_PuBr_continuous', 'rainbow_PuBr_discrete',
+              'rainbow_PuRd_continuous', 'rainbow_PuRd_discrete',
+              'rainbow_WhBr_continuous', 'rainbow_WhBr_discrete',
+              'rainbow_WhRd_continuous', 'rainbow_WhRd_discrete',
+              'PRGn_continuous', 'PRGn_discrete',
+              'sunset_continuous', 'sunset_discrete',
+              'YlOrBr_continuous', 'YlOrBr_discrete',
+)
+
 _nature_review_names = ('stone', 'grey', 'red', 'blue', 'yellow', 'olive', 'green', 'teal', 'purple', 'orange')
 
 _cmap_base_names_uncategorized = tuple(
@@ -284,6 +317,7 @@ def show_cmaps(*, ncols=6, figwidth=8):
         ("Categorical", _cmap_names_categorical),
         ("Uncategorized", _cmap_names_uncategorized),
         ("cpt", _cmap_names_cpt),
+        ("paultol", _cmap_names_paultol),
         ("nature_reviews", _nature_review_names),
     )
 
